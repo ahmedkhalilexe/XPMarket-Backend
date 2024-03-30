@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  userId        String          @id @default(uuid())
+  userEmail     String          @unique
+  userPassword  String
+  userFirstName String
+  userLastName  String
+  userCreatedAt DateTime        @default(now())
+  userUpdatedAt DateTime        @default(now())
+  //TODO: userRole
+  userRole      UserRole        @relation(fields: [userRoleId], references: [userRoleId])
+  userRoleId    Int             @default(2)
+  Orders        Orders[]
+  UserCartItems UserCartItems[]
+}
+
+model UserRole {
+  userRoleId   Int     @id @default(autoincrement())
+  userRoleName String
+  Users        Users[]
+}
+
+model Orders {
+  orderId      String         @id @default(uuid())
+  orderStatus  String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now())
+  user         Users          @relation(fields: [userId], references: [userId])
+  userId       String
+  OrderedItems OrderedItems[]
+}
+
+model Items {
+  itemId          String          @id @default(uuid())
+  itemName        String
+  itemDescription String
+  itemPrice       Float
+  itemOldPrice    Float
+  itemCategory    ItemCategories  @relation(fields: [itemCategoryId], references: [itemCategoryId])
+  itemCategoryId  Int
+  OrderedItems    OrderedItems[]
+  ItemImages      ItemImages[]
+  UserCartItems   UserCartItems[]
+}
+
+model ItemCategories {
+  itemCategoryId   Int     @id @default(autoincrement())
+  itemCategoryName String
+  items            Items[]
+}
+
+model OrderedItems {
+  orderedItemId String @id @default(uuid())
+  order         Orders @relation(fields: [orderID], references: [orderId])
+  orderID       String
+  item          Items  @relation(fields: [itemId], references: [itemId])
+  itemId        String
+}
+
+model ItemImages {
+  itemImageId  String @id @default(uuid())
+  itemImageUri String
+  item         Items  @relation(fields: [itemId], references: [itemId])
+  itemId       String
+}
+
+model UserCartItems {
+  userCartItemId String @id @default(uuid())
+  item           Items  @relation(fields: [itemId], references: [itemId])
+  itemId         String
+  user           Users  @relation(fields: [userId], references: [userId])
+  userId         String
+}
