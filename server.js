@@ -1,11 +1,10 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-
+const cookiePrser = require("cookie-parser");
 const { PrismaClient } = require("@prisma/client");
-const { trace } = require("./public/routes");
 const prisma = new PrismaClient();
-
+app.use(cookiePrser());
 app.use(cors());
 app.use(express.json());
 app.use("/api", require("./routes/routes"));

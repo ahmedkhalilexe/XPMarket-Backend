@@ -1,7 +1,9 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
+const { json } = require("express");
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const jwt = require("jsonwebtoken");
 const User = {
   signIn: async (req, res) => {
     const { userEmail, userPassword } = req.body;
@@ -16,10 +18,15 @@ const User = {
     });
     if (user) {
       const compared = await bcrypt.compare(userPassword, user.userPassword);
-      console.log(compared);
       if (compared) {
         user.userPassword = undefined;
-        return res.status(200).json(user);
+        const token = jwt.sign(user, process.env.JWT_SECRET, {
+          expiresIn: "5m",
+        });
+        res.cookie("t", token, {
+          httpOnly: true,
+        });
+        return res.status(200).json({ message: "signed in successfully" });
       } else {
         return res.status(403).json({ message: "Email or password incorrect" });
       }
@@ -58,13 +65,36 @@ const User = {
       newUser.userPassword = undefined;
       return res.status(201).json(newUser);
     } catch (error) {
-      return res
-        .status(400)
-        .json({ message: "Error creating user", error: error.message });
+      return res.status(400).json({ message: "Error creating user" });
     }
   },
-  getAllUsers: (req, res) => {},
-  deleteUser: (req, res) => {},
+  getAllUsers: async (req, res) => {
+    console.log(req.user);
+    const allUsers = await prisma.users.findMany();
+    return res.status(200).json(allUsers);
+  },
+  deleteUser: async (req, res) => {
+    const { userId } = req.body;
+    try {
+      const deletedUser = await prisma.users.delete({
+        where: {
+          userId,
+        },
+      });
+      if (userId == req.user.userId) {
+        res.clearCookie("t");
+      }
+      return (
+        res.sendStatus(200),
+        json({
+          userId,
+          message: "User deleted successfully",
+        })
+      );
+    } catch {
+      return res.status(400).json({ message: "Something went wrong" });
+    }
+  },
   userOrder: (req, res) => {},
 };
 
