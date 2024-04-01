@@ -15,4 +15,17 @@ router.delete(
   require("../../controllers/productController").deleteProduct
 );
 
+router.get(
+  "/getAllProducts",
+  require("../../controllers/productController").getAllProducts
+);
+router.get(
+  "/getProductById",
+  require("../../controllers/productController").getProductById
+);
+
+router.get(
+  "/getProductsByCategory",
+  require("../../controllers/productController").getProductsByCategory
+);
 module.exports = router;

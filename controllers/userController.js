@@ -44,11 +44,11 @@ const User = {
       if (!emailRegex.test(userEmail)) {
         return res.status(400).json({ message: "Invalid email address" });
       }
-      const userFindMany = await prisma.users.findMany({
+      const user = await prisma.users.findUnique({
         where: { userEmail },
       });
 
-      if (userFindMany.length > 0) {
+      if (user) {
         return res.status(400).json({ message: "User already exists" });
       }
       const salt = bcrypt.genSaltSync(10);
