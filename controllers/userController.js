@@ -95,6 +95,7 @@ const User = {
       return res.status(400).json({ message: "Something went wrong" });
     }
   },
+  userUpdate: (req, res) => {},
   userOrder: (req, res) => {},
 };
 

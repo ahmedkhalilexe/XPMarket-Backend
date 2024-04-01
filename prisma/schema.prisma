@@ -64,11 +64,12 @@ model ItemCategories {
 }
 
 model OrderedItems {
-  orderedItemId String @id @default(uuid())
-  order         Orders @relation(fields: [orderID], references: [orderId])
-  orderID       String
-  item          Items  @relation(fields: [itemId], references: [itemId])
-  itemId        String
+  orderedItemId       String @id @default(uuid())
+  order               Orders @relation(fields: [orderID], references: [orderId])
+  orderID             String
+  item                Items  @relation(fields: [itemId], references: [itemId])
+  itemId              String
+  orderedItemQuantity Int    @default(1)
 }
 
 model ItemImages {
@@ -79,9 +80,10 @@ model ItemImages {
 }
 
 model UserCartItems {
-  userCartItemId String @id @default(uuid())
-  item           Items  @relation(fields: [itemId], references: [itemId])
-  itemId         String
-  user           Users  @relation(fields: [userId], references: [userId])
-  userId         String
+  userCartItemId       String @id @default(uuid())
+  item                 Items  @relation(fields: [itemId], references: [itemId])
+  itemId               String
+  user                 Users  @relation(fields: [userId], references: [userId])
+  userId               String
+  userCartItemQuantity Int    @default(1)
 }
