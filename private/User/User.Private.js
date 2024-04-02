@@ -9,9 +9,5 @@ router.delete(
   "/deleteUser",
   require("../../controllers/userController").deleteUser
 );
-router.post(
-  "/userOrder",
-  require("../../controllers/userController").userOrder
-);
 
 module.exports = router;
