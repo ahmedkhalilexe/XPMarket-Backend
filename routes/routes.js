@@ -4,7 +4,7 @@ router.use("/public", require("../public/routes"));
 
 router.use(
   "/private",
-  require("../controllers/authController").privateRouteValidator,
+  require("../middleware/authMiddleware").privateRouteValidator,
   require("../private/routes")
 );
 
