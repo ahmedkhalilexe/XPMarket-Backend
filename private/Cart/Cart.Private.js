@@ -5,12 +5,12 @@ router.post("/addCart", require("../../controllers/cartController").addToCart);
 router.get("/getCart", require("../../controllers/cartController").getCart);
 
 router.put(
-  "/updateCart",
-  require("../../controllers/cartController").updateCart
+  "/updateCartItem",
+  require("../../controllers/cartController").updateCartItem
 );
 
 router.delete(
-  "/deleteCart",
+  "/deleteFromCart",
   require("../../controllers/cartController").deleteFromCart
 );
 

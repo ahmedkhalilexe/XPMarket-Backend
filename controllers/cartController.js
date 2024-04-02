@@ -21,8 +21,33 @@ const Cart = {
     }
     return res.status(403).json({ message: "No item to add to cart" });
   },
-  deleteFromCart: (req, res) => {},
-  updateCart: (req, res) => {},
+  deleteFromCart: async (req, res) => {
+    const { userCartItemId } = req.body;
+    const deletedCartItem = await prisma.userCartItems.delete({
+      where: {
+        userCartItemId,
+      },
+    });
+    if (deletedCartItem) {
+      return res.sendStatus(200);
+    }
+    return res.sendStatus(400);
+  },
+  updateCartItem: async (req, res) => {
+    const { userCartItemId, userCartItemQuantity } = req.body;
+    const updatedCartItem = await prisma.userCartItems.update({
+      where: {
+        userCartItemId,
+      },
+      data: {
+        userCartItemQuantity,
+      },
+    });
+    if (updatedCartItem) {
+      return res.sendStatus(200);
+    }
+    return res.sendStatus(400);
+  },
   getCart: async (req, res) => {
     const { userId } = req.user;
     const userCartItems = await prisma.userCartItems.findMany({
@@ -36,6 +61,7 @@ const Cart = {
       if (item) {
         const formatedData = formateData(item);
         itemsList.push({
+          userCartItemId: row.userCartItemId,
           item: formatedData[row.itemId],
           itemQuantity: row.userCartItemQuantity,
         });
