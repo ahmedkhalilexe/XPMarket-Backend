@@ -1,5 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const ProductModel = require("../models/productModel");
+const formateData = require("../helpers/formateData");
+
 const Product = {
   addProduct: async (req, res) => {
     const {
@@ -85,55 +88,26 @@ const Product = {
 
   getProductById: async (req, res) => {
     const { itemId } = req.body;
-    const product = await prisma.items.findUnique({
-      where: {
-        itemId,
-      },
-    });
+    const product = await ProductModel.getProductById(itemId);
     if (product) {
-      const productImages = await prisma.itemImages.findMany({
-        where: {
-          itemId,
-        },
-      });
-      if (productImages) {
-        const formatedDate = {
-          item: product,
-          images: productImages,
-        };
-        return res.status(200).json(formatedDate);
-      }
-      return res.status(200).json({ item: product });
+      const formatedData = formateData(product);
+      return res.status(200).json(formatedData[itemId]);
     }
     return res.status(400).json({ message: "No product found" });
   },
 
   getAllProducts: async (req, res) => {
-    const allProducts =
-      await prisma.$queryRaw`SELECT "Items".*, "ItemImages"."itemImageUri" from "Items" INNER JOIN "ItemImages" ON "ItemImages"."itemId" = "Items"."itemId"`;
-    const formatedData = {};
-    for (const row of allProducts) {
-      const { itemId, itemImageUri, ...itemData } = row;
-      if (!formatedData[itemId]) {
-        formatedData[itemId] = { item: itemData, images: [] };
-      }
-      formatedData[itemId].images.push(row.itemImageUri);
-    }
+    const allProducts = await ProductModel.getAllProducts();
+    const formatedData = formateData(allProducts);
     res.status(200).json(formatedData);
   },
 
   getProductsByCategory: async (req, res) => {
     const { itemCategoryId } = req.body;
-    const allProducts =
-      await prisma.$queryRaw`SELECT "Items".*, "ItemImages"."itemImageUri" from "Items" INNER JOIN "ItemImages" ON "ItemImages"."itemId" = "Items"."itemId" WHERE "Items"."itemCategoryId" = ${itemCategoryId}`;
-    const formatedData = {};
-    for (const row of allProducts) {
-      const { itemId, itemImageUri, ...itemData } = row;
-      if (!formatedData[itemId]) {
-        formatedData[itemId] = { item: itemData, images: [] };
-      }
-      formatedData[itemId].images.push(row.itemImageUri);
-    }
+    const allProducts = await ProductModel.getProductsByCategory(
+      itemCategoryId
+    );
+    const formatedData = formateData(allProducts);
     res.status(200).json(formatedData);
   },
 };
