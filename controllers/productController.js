@@ -6,34 +6,39 @@ const formateData = require("../helpers/formateData");
 const Product = {
   addProduct: async (req, res) => {
     const {
-      itemName,
-      itemDescription,
-      itemPrice,
-      itemCategoryId,
-      itemImagesUri,
+      productName,
+      productDescription,
+      productPrice,
+      productCategoryId,
+      productImagesUri,
     } = req.body;
-    if (!itemName || !itemDescription || !itemPrice || !itemCategoryId) {
+    if (
+      !productName ||
+      !productDescription ||
+      !productPrice ||
+      !productCategoryId
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
-    const item = await prisma.items.create({
+    const product = await prisma.products.create({
       data: {
-        itemName,
-        itemDescription,
-        itemPrice,
-        itemOldPrice: itemPrice,
-        itemCategoryId,
+        productName,
+        productDescription,
+        productPrice,
+        productOldPrice: productPrice,
+        productCategoryId,
       },
     });
-    if (item) {
-      if (itemImagesUri) {
-        itemImagesUri.forEach(async (itemImageUri) => {
-          const itemImage = await prisma.itemImages.create({
+    if (product) {
+      if (productImagesUri) {
+        productImagesUri.forEach(async (productImageUri) => {
+          const productImage = await prisma.productImages.create({
             data: {
-              itemImageUri: itemImageUri,
-              itemId: item.itemId,
+              productImageUri: productImageUri,
+              productId: product.productId,
             },
           });
-          if (!itemImage) {
+          if (!productImage) {
             return res.status(400).json({ message: "Something went wrong" });
           }
         });
@@ -45,22 +50,23 @@ const Product = {
   },
   updateProduct: async (req, res) => {
     const {
-      itemId,
-      itemName,
-      itemDescription,
-      itemPrice,
-      itemCategoryId,
-      itemImageUri,
+      productId,
+      productName,
+      productDescription,
+      productPrice,
+      productCategoryId,
+      productImagesUri,
     } = req.body;
-    const item = await prisma.items.update({
+    const product = await prisma.products.update({
       where: {
-        itemId,
+        productId,
       },
       data: {
-        itemName,
-        itemDescription,
-        itemPrice,
-        itemCategoryId,
+        productName,
+        productDescription,
+        productPrice,
+        productPrice,
+        productCategoryId,
       },
     });
     // if (itemImageUri) {
@@ -78,7 +84,7 @@ const Product = {
     //   }
     //   return res.status(201).json({ message: "Item updated successfully" });
     // }
-    if (item) {
+    if (product) {
       return res.status(201).json({ message: "Item updated successfully" });
     }
     res.status(400).json({ message: "Something went wrong" });
@@ -87,11 +93,11 @@ const Product = {
   deleteProduct: (req, res) => {},
 
   getProductById: async (req, res) => {
-    const { itemId } = req.body;
-    const product = await ProductModel.getProductById(itemId);
+    const { productId } = req.body;
+    const product = await ProductModel.getProductById(productId);
     if (product) {
       const formatedData = formateData(product);
-      return res.status(200).json(formatedData[itemId]);
+      return res.status(200).json(formatedData[0]);
     }
     return res.status(400).json({ message: "No product found" });
   },
@@ -103,9 +109,9 @@ const Product = {
   },
 
   getProductsByCategory: async (req, res) => {
-    const { itemCategoryId } = req.body;
+    const { productCategoryId } = req.body;
     const allProducts = await ProductModel.getProductsByCategory(
-      itemCategoryId
+      productCategoryId
     );
     const formatedData = formateData(allProducts);
     res.status(200).json(formatedData);

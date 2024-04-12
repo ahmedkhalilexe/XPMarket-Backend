@@ -14,18 +14,18 @@ datasource db {
 }
 
 model Users {
-  userId        String          @id @default(uuid())
-  userEmail     String          @unique
-  userPassword  String
-  userFirstName String
-  userLastName  String
-  userCreatedAt DateTime        @default(now())
-  userUpdatedAt DateTime        @default(now())
+  userId           String             @id @default(uuid())
+  userEmail        String             @unique
+  userPassword     String
+  userFirstName    String
+  userLastName     String
+  userCreatedAt    DateTime           @default(now())
+  userUpdatedAt    DateTime           @default(now())
   //TODO: userRole
-  userRole      UserRole        @relation(fields: [userRoleId], references: [userRoleId])
-  userRoleId    Int             @default(2)
-  Orders        Orders[]
-  UserCartItems UserCartItems[]
+  userRole         UserRole           @relation(fields: [userRoleId], references: [userRoleId])
+  userRoleId       Int                @default(2)
+  Orders           Orders[]
+  UserCartProducts UserCartProducts[]
 }
 
 model UserRole {
@@ -35,55 +35,55 @@ model UserRole {
 }
 
 model Orders {
-  orderId      String         @id @default(uuid())
-  orderStatus  String
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @default(now())
-  user         Users          @relation(fields: [userId], references: [userId])
-  userId       String
-  OrderedItems OrderedItems[]
+  orderId         String            @id @default(uuid())
+  orderStatus     String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
+  user            Users             @relation(fields: [userId], references: [userId])
+  userId          String
+  OrderedProducts OrderedProducts[]
 }
 
-model Items {
-  itemId          String          @id @default(uuid())
-  itemName        String
-  itemDescription String
-  itemPrice       Float
-  itemOldPrice    Float
-  itemCategory    ItemCategories  @relation(fields: [itemCategoryId], references: [itemCategoryId])
-  itemCategoryId  Int
-  OrderedItems    OrderedItems[]
-  ItemImages      ItemImages[]
-  UserCartItems   UserCartItems[]
+model Products {
+  productId          String             @id @default(uuid())
+  productName        String
+  productDescription String
+  productPrice       Float
+  productOldPrice    Float
+  productCategory    ProductCategories  @relation(fields: [productCategoryId], references: [productCategoryId])
+  productCategoryId  Int
+  OrderedProducts    OrderedProducts[]
+  ProductImages      ProductImages[]
+  UserCartProducts   UserCartProducts[]
 }
 
-model ItemCategories {
-  itemCategoryId   Int     @id @default(autoincrement())
-  itemCategoryName String
-  items            Items[]
+model ProductCategories {
+  productCategoryId   Int        @id @default(autoincrement())
+  productCategoryName String
+  product             Products[]
 }
 
-model OrderedItems {
-  orderedItemId       String @id @default(uuid())
-  order               Orders @relation(fields: [orderID], references: [orderId])
+model OrderedProducts {
+  orderedItemId       String   @id @default(uuid())
+  order               Orders   @relation(fields: [orderID], references: [orderId])
   orderID             String
-  item                Items  @relation(fields: [itemId], references: [itemId])
-  itemId              String
-  orderedItemQuantity Int    @default(1)
+  product             Products @relation(fields: [productId], references: [productId])
+  productId           String
+  orderedItemQuantity Int      @default(1)
 }
 
-model ItemImages {
-  itemImageId  String @id @default(uuid())
-  itemImageUri String
-  item         Items  @relation(fields: [itemId], references: [itemId])
-  itemId       String
+model ProductImages {
+  productImageId  String   @id @default(uuid())
+  productImageUri String
+  product         Products @relation(fields: [productId], references: [productId])
+  productId       String
 }
 
-model UserCartItems {
-  userCartItemId       String @id @default(uuid())
-  item                 Items  @relation(fields: [itemId], references: [itemId])
-  itemId               String
-  user                 Users  @relation(fields: [userId], references: [userId])
-  userId               String
-  userCartItemQuantity Int    @default(1)
+model UserCartProducts {
+  userCartProductId       String   @id @default(uuid())
+  product                 Products @relation(fields: [productId], references: [productId])
+  productId               String
+  user                    Users    @relation(fields: [userId], references: [userId])
+  userId                  String
+  userCartProductQuantity Int      @default(1)
 }

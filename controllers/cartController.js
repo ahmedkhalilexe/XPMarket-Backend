@@ -5,16 +5,16 @@ const formateData = require("../helpers/formateData");
 const Cart = {
   addToCart: async (req, res) => {
     const { userId } = req.user;
-    const { itemId, userCartItemQuantity } = req.body;
-    if (itemId) {
-      const cartItem = await prisma.userCartItems.create({
+    const { productId, userCartProductQuantity } = req.body;
+    if (productId) {
+      const cartProduct = await prisma.userCartProducts.create({
         data: {
-          itemId,
+          productId,
           userId,
-          userCartItemQuantity,
+          userCartProductQuantity,
         },
       });
-      if (!cartItem) {
+      if (!cartProduct) {
         return res.status(403).json({ message: "Something went wrong" });
       }
       return res.status(200).json({ message: "item added to cart" });
@@ -22,52 +22,54 @@ const Cart = {
     return res.status(403).json({ message: "No item to add to cart" });
   },
   deleteFromCart: async (req, res) => {
-    const { userCartItemId } = req.body;
-    const deletedCartItem = await prisma.userCartItems.delete({
+    const { userCartProductId } = req.body;
+    const deletedCartProduct = await prisma.userCartProducts.delete({
       where: {
-        userCartItemId,
+        userCartProductId,
       },
     });
-    if (deletedCartItem) {
+    if (deletedCartProduct) {
       return res.sendStatus(200);
     }
     return res.sendStatus(400);
   },
   updateCartItem: async (req, res) => {
-    const { userCartItemId, userCartItemQuantity } = req.body;
-    const updatedCartItem = await prisma.userCartItems.update({
+    const { userCartProductId, userCartProductQuantity } = req.body;
+    const updatedCartProduct = await prisma.userCartProducts.update({
       where: {
-        userCartItemId,
+        userCartProductId,
       },
       data: {
-        userCartItemQuantity,
+        userCartProductQuantity,
       },
     });
-    if (updatedCartItem) {
+    if (updatedCartProduct) {
       return res.sendStatus(200);
     }
     return res.sendStatus(400);
   },
   getCart: async (req, res) => {
     const { userId } = req.user;
-    const userCartItems = await prisma.userCartItems.findMany({
+    const userCartProduct = await prisma.userCartProducts.findMany({
       where: {
         userId,
       },
     });
-    const itemsList = [];
-    for (const row of userCartItems) {
-      const item = await ProductModel.getProductById(row.itemId);
-      if (item) {
-        const formatedData = formateData(item);
-        itemsList.push({
-          userCartItemId: row.userCartItemId,
-          item: formatedData[row.itemId],
-          itemQuantity: row.userCartItemQuantity,
+    const productList = [];
+    for (const row of userCartProduct) {
+      const product = await ProductModel.getProductById(row.productId);
+      if (product) {
+        const formatedData = formateData(product);
+        // return res.status(200).json(formatedData);
+
+        productList.push({
+          userCartProductId: row.userCartProductId,
+          product: formatedData[0],
+          productQuantity: row.userCartProductQuantity,
         });
       }
     }
-    return res.status(200).json(itemsList);
+    return res.status(200).json(productList);
   },
 };
 

@@ -1,15 +1,22 @@
 const formateData = (allProducts) => {
   const formatedData = {};
+  console.log(allProducts);
   for (const row of allProducts) {
-    const { itemId, itemImageUri, itemImageId, ...itemData } = row;
-    if (!formatedData[itemId]) {
-      formatedData[itemId] = { itemId: itemId, item: itemData, images: [] };
+    const { productId, productImageUri, productImageId, ...productData } = row;
+    if (!formatedData[productId]) {
+      formatedData[productId] = {
+        productId: productId,
+        product: productData,
+        images: [],
+      };
     }
-    formatedData[itemId].images.push({
-      imageId: itemImageId,
-      imageUri: itemImageUri,
+    formatedData[productId].images.push({
+      imageId: productImageId,
+      imageUri: productImageUri,
     });
   }
-  return formatedData;
+  const formattedProductsArray = Object.values(formatedData);
+  console.log(formattedProductsArray);
+  return formattedProductsArray;
 };
 module.exports = formateData;

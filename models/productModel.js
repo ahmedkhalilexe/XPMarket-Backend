@@ -1,19 +1,19 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const ProductModel = {
-  getProductById: async (itemId) => {
+  getProductById: async (productId) => {
     const product =
-      await prisma.$queryRaw`SELECT "Items".*, "ItemImages"."itemImageUri", "ItemImages"."itemImageId" from "Items" INNER JOIN "ItemImages" ON "ItemImages"."itemId" = "Items"."itemId" WHERE "Items"."itemId" = ${itemId}`;
+      await prisma.$queryRaw`SELECT "Products".*, "ProductImages"."productImageUri", "ProductImages"."productImageId" from "Products" INNER JOIN "ProductImages" ON "ProductImages"."productId" = "Products"."productId" WHERE "Products"."productId" = ${productId}`;
     return product;
   },
   getAllProducts: async () => {
     const allProducts =
-      await prisma.$queryRaw`SELECT "Items".*, "ItemImages"."itemImageUri" from "Items" INNER JOIN "ItemImages" ON "ItemImages"."itemId" = "Items"."itemId"`;
+      await prisma.$queryRaw`SELECT "Products".*, "ProductImages"."productImageUri" from "Products" INNER JOIN "ProductImages" ON "ProductImages"."productId" = "Products"."productId"`;
     return allProducts;
   },
-  getProductsByCategory: async (itemCategoryId) => {
+  getProductsByCategory: async (productCategoryId) => {
     const allProducts =
-      await prisma.$queryRaw`SELECT "Items".*, "ItemImages"."itemImageUri" from "Items" INNER JOIN "ItemImages" ON "ItemImages"."itemId" = "Items"."itemId" WHERE "Items"."itemCategoryId" = ${itemCategoryId}`;
+      await prisma.$queryRaw`SELECT "Products".*, "ProductImages"."productImageUri" from "Products" INNER JOIN "ProductImages" ON "ProductImages"."productId" = "Products"."productId" WHERE "Products"."productCategoryId" = ${productCategoryId}`;
     return allProducts;
   },
 };
