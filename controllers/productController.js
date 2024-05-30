@@ -96,16 +96,14 @@ const Product = {
     const { productId } = req.body;
     const product = await ProductModel.getProductById(productId);
     if (product) {
-      const formatedData = formateData(product);
-      return res.status(200).json(formatedData[0]);
+      return res.status(200).json(product);
     }
     return res.status(400).json({ message: "No product found" });
   },
 
   getAllProducts: async (req, res) => {
     const allProducts = await ProductModel.getAllProducts();
-    const formatedData = formateData(allProducts);
-    res.status(200).json(formatedData);
+    res.status(200).json(allProducts);
   },
 
   getProductsByCategory: async (req, res) => {
@@ -113,8 +111,7 @@ const Product = {
     const allProducts = await ProductModel.getProductsByCategory(
       productCategoryId
     );
-    const formatedData = formateData(allProducts);
-    res.status(200).json(formatedData);
+    res.status(200).json(allProducts);
   },
 };
 
