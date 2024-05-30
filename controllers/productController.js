@@ -1,7 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const ProductModel = require("../models/productModel");
-const formateData = require("../helpers/formateData");
 
 const Product = {
   addProduct: async (req, res) => {

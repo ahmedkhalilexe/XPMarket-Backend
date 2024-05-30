@@ -1,7 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const ProductModel = require("../models/productModel");
-const formateData = require("../helpers/formateData");
 const Cart = {
   addToCart: async (req, res) => {
     const { userId } = req.user;
@@ -59,12 +58,9 @@ const Cart = {
     for (const row of userCartProduct) {
       const product = await ProductModel.getProductById(row.productId);
       if (product) {
-        const formatedData = formateData(product);
-        // return res.status(200).json(formatedData);
-
         productList.push({
           userCartProductId: row.userCartProductId,
-          product: formatedData[0],
+          product: product,
           productQuantity: row.userCartProductQuantity,
         });
       }
