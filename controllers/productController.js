@@ -64,7 +64,6 @@ const Product = {
         productName,
         productDescription,
         productPrice,
-        productPrice,
         productCategoryId,
       },
     });
