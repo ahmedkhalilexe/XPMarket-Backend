@@ -55,6 +55,8 @@ model Products {
   OrderedProducts    OrderedProducts[]
   ProductImages      ProductImages[]
   UserCartProducts   UserCartProducts[]
+  productCreatedAt    DateTime           @default(now())
+  productUpdatedAt    DateTime           @default(now())
 }
 
 model ProductCategories {
