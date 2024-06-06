@@ -112,6 +112,15 @@ const Product = {
     );
     res.status(200).json(allProducts);
   },
+  getOnSaleProducts : async (req, res) => {
+    const allProducts = await ProductModel.getOnSaleProducts();
+    res.status(200).json(allProducts);
+  },
+  getNewProducts:async (req,res)=>{
+    const allProducts = await ProductModel.getNewProducts();
+    res.status(200).json(allProducts);
+  }
 };
+
 
 module.exports = Product;

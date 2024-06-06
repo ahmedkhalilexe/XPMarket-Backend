@@ -14,5 +14,8 @@ router.get(
   "/getProductsByCategory",
   require("../../controllers/productController").getProductsByCategory
 );
+router.get("/getOnSaleProducts", require("../../controllers/productController").getOnSaleProducts);
+
+router.get("/getNewProducts", require("../../controllers/productController").getNewProducts);
 
 module.exports = router;
