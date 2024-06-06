@@ -48,6 +48,7 @@ const Product = {
     return res.status(400).json({ message: "Something went wrong" });
   },
   updateProduct: async (req, res) => {
+    const currentTime = new Date();
     const {
       productId,
       productName,
@@ -65,6 +66,7 @@ const Product = {
         productDescription,
         productPrice,
         productCategoryId,
+        productUpdatedAt: currentTime,
       },
     });
     // if (itemImageUri) {
