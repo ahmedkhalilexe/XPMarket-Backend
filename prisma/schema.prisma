@@ -11,6 +11,7 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Users {
@@ -21,7 +22,6 @@ model Users {
   userLastName     String
   userCreatedAt    DateTime           @default(now())
   userUpdatedAt    DateTime           @default(now())
-  //TODO: userRole
   userRole         UserRole           @relation(fields: [userRoleId], references: [userRoleId])
   userRoleId       Int                @default(2)
   Orders           Orders[]
