@@ -116,7 +116,7 @@ const ProductModel = {
     getProductsByCategory: async (productCategoryId) => {
         return prisma.products.findMany({
             where: {
-                productCategoryId: productCategoryId,
+                productCategoryId,
             }, include: {
                 ProductImages: {
                     select: {

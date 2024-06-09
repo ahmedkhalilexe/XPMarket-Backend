@@ -17,6 +17,7 @@ const orderModel = {
                     select: {
                         orderedItemQuantity: true, product: {
                             select: {
+                                productId: true,
                                 productName: true,
                                 productPrice: true,
                                 productDescription: true,
@@ -33,7 +34,8 @@ const orderModel = {
                 }
             }
         })
-    }, getAllOrdersByUser: (userId) => {
+    },
+    getAllOrdersByUser: (userId) => {
         return prisma.orders.findMany({
             where: {
                 userId
@@ -42,6 +44,7 @@ const orderModel = {
                     select: {
                         orderedItemQuantity: true, product: {
                             select: {
+                                productId: true,
                                 productName: true,
                                 productPrice: true,
                                 productDescription: true,
@@ -69,6 +72,7 @@ const orderModel = {
                     select: {
                         orderedItemQuantity: true, product: {
                             select: {
+                                productId: true,
                                 productName: true,
                                 productPrice: true,
                                 productDescription: true,

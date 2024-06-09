@@ -56,19 +56,23 @@ const Product = {
 
     getProductsByCategory: async (req, res) => {
         const {productCategoryId} = req.body;
-        const allProducts = await ProductModel.getProductsByCategory(productCategoryId);
-        res.status(200).json(allProducts);
+        try {
+            const allProducts = await ProductModel.getProductsByCategory(productCategoryId);
+            res.status(200).json(allProducts);
+        } catch (err) {
+            return res.status(400).json({message: "Something went wrong", error: err});
+        }
     },
-
     getOnSaleProducts: async (req, res) => {
         const allProducts = await ProductModel.getOnSaleProducts();
         res.status(200).json(allProducts);
     },
 
-    getNewProducts: async (req, res) => {
-        const allProducts = await ProductModel.getNewProducts();
-        res.status(200).json(allProducts);
-    }
+    getNewProducts:
+        async (req, res) => {
+            const allProducts = await ProductModel.getNewProducts();
+            res.status(200).json(allProducts);
+        }
 };
 
 

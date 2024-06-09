@@ -1,7 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const bcrypt = require("bcrypt");
-const { json } = require("express");
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const jwt = require("jsonwebtoken");
 const User = {
@@ -69,30 +68,23 @@ const User = {
     }
   },
   getAllUsers: async (req, res) => {
-    console.log(req.user);
     const allUsers = await prisma.users.findMany();
     return res.status(200).json(allUsers);
   },
   deleteUser: async (req, res) => {
     const { userId } = req.body;
     try {
-      const deletedUser = await prisma.users.delete({
+      await prisma.users.delete({
         where: {
           userId,
         },
       });
-      if (userId == req.user.userId) {
-        res.clearCookie("t");
+      if (userId === req.user.userId) {
+        return res.clearCookie("t").status(200).json({ message: "User deleted" });
       }
-      return (
-        res.sendStatus(200),
-        json({
-          userId,
-          message: "User deleted successfully",
-        })
-      );
-    } catch {
-      return res.status(400).json({ message: "Something went wrong" });
+      return res.status(200).json({ message: "User deleted" });
+    } catch(error) {
+      return res.status(400).json({ message: "Something went wrong", error });
     }
   },
   // userUpdate: (req, res) => {},
