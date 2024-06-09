@@ -1,9 +1,95 @@
 const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
 const ProductModel = {
+    addProduct: async (productName, productDescription, productPrice, productCategoryId, productImagesUri)=>{
+        return prisma.products.create({
+            data: {
+                productName,
+                productDescription,
+                productPrice,
+                productOldPrice: productPrice,
+                productCategoryId,
+                ProductImages: {
+                    create: productImagesUri.map((productImageUri) => {
+                        return {
+                            productImageUri,
+                        };
+                    }),
+                },
+
+            }
+        });
+    },
+    updateProduct: async (productId,productName,productDescription,productPrice,productCategoryId,ProductImages,currentTime)=>{
+        await prisma.products.update({
+            where: {
+                productId,
+            }, data: {
+                productName, productDescription, productPrice, productCategoryId, productUpdatedAt: currentTime,
+            },
+        });
+        if (ProductImages.length > 0) {
+            await prisma.productImages.deleteMany({
+                where: {
+                    productId,
+                },
+            });
+
+            await prisma.productImages.createMany({
+                data: ProductImages.map((productImage) => {
+                    return {
+                        productImageUri: productImage.productImageUri, productId,
+                    };
+
+                }),
+            });
+        }
+
+    },
+    deleteProduct: async (productId)=>{
+        await prisma.productImages.deleteMany({
+            where: {
+                productId,
+            },
+        });
+        await prisma.userCartProducts.deleteMany({
+            where: {
+                productId,
+            },
+        });
+        const orderedProducts = await prisma.orderedProducts.findMany({
+            where: {
+                productId,
+            },
+            include:{
+                order:{
+                    select:{
+                        orderId:true,
+                    }
+                }
+            }
+        });
+        await prisma.orderedProducts.deleteMany({
+            where: {
+                productId,
+            },
+        });
+        await prisma.orders.deleteMany({
+            where: {
+                orderId: {
+                    in: orderedProducts.map((orderedProduct) => {
+                        return orderedProduct.orderID;
+                    }),
+                },
+            },
+        });
+        await prisma.products.delete({
+            where: {
+                productId,
+            },
+        });
+    },
     getProductById: async (productId) => {
-        //const product =
-        //  await prisma.$queryRaw`SELECT "Products".*, "ProductImages"."productImageUri", "ProductImages"."productImageId" from "Products" INNER JOIN "ProductImages" ON "ProductImages"."productId" = "Products"."productId" WHERE "Products"."productId" = ${productId}`;
         return prisma.products.findUnique({
             where: {
                 productId: productId,
@@ -16,7 +102,6 @@ const ProductModel = {
             },
         });
     },
-
     getAllProducts: async () => {
         return prisma.products.findMany({
             include: {
@@ -27,7 +112,8 @@ const ProductModel = {
                 },
             },
         });
-    }, getProductsByCategory: async (productCategoryId) => {
+    },
+    getProductsByCategory: async (productCategoryId) => {
         return prisma.products.findMany({
             where: {
                 productCategoryId: productCategoryId,
@@ -39,7 +125,8 @@ const ProductModel = {
                 },
             },
         });
-    }, getOnSaleProducts: async () => {
+    },
+    getOnSaleProducts: async () => {
         return prisma.products.findMany({
             where: {
                 productOldPrice: {
