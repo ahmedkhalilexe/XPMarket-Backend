@@ -128,6 +128,7 @@ const ProductModel = {
     },
     getOnSaleProducts: async () => {
         return prisma.products.findMany({
+            take: 4,
             where: {
                 productOldPrice: {
                     gt: prisma.products.fields.productPrice,
@@ -145,6 +146,7 @@ const ProductModel = {
         const getSevenDaysAgo = require('../helpers/getSevenDaysAgo');
         const sevenDaysAgo = getSevenDaysAgo();
         return prisma.products.findMany({
+            take:4,
             where: {
                 productCreatedAt: {
                     gt: sevenDaysAgo
