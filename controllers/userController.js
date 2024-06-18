@@ -20,12 +20,20 @@ const User = {
       if (compared) {
         user.userPassword = undefined;
         const token = jwt.sign(user, process.env.JWT_SECRET, {
-          expiresIn: "5m",
+          expiresIn: "10m",
         });
-        res.cookie("t", token, {
-          httpOnly: true,
+        const refreshToken = jwt.sign({
+          userId: user.userId,
+        }, process.env.JWT_SECRET,{
+            expiresIn: "1d",
         });
-        return res.status(200).json({ message: "signed in successfully" });
+        res.cookie("rt", refreshToken, {
+            httpOnly: true,
+            maxAge: 1000 * 60 * 60 * 24,
+          sameSite: "none",
+            secure: true,
+        });
+        return res.status(200).json({ message: "signed in successfully",user ,token});
       } else {
         return res.status(403).json({ message: "Email or password incorrect" });
       }
@@ -88,6 +96,10 @@ const User = {
     }
   },
   // userUpdate: (req, res) => {},
+//   getUser : (req, res) => {
+//   const user  = req.user;
+//   return res.status(200).json(user);
+// }
 };
 
 module.exports = User;

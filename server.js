@@ -5,7 +5,10 @@ const cookiePrser = require("cookie-parser");
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 app.use(cookiePrser());
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:3000", "http://localhost:3001"],
+  credentials: true,
+}));
 app.use(express.json());
 app.use("/api", require("./routes/routes"));
 app.listen(3000, async () => {
