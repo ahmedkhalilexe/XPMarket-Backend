@@ -41,7 +41,7 @@ const Product = {
     },
 
     getProductById: async (req, res) => {
-        const {productId} = req.body;
+        const productId = req.query.productId
         const product = await ProductModel.getProductById(productId);
         if (product) {
             return res.status(200).json(product);

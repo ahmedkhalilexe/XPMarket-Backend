@@ -41,6 +41,11 @@ const User = {
       return res.status(403).json({ message: "Email or password incorrect" });
     }
   },
+  signOut: (req, res) => {
+    res.clearCookie("t");
+    res.clearCookie("rt");
+    return res.status(200).json({ message: "Signed out" });
+  },
   signUp: async (req, res) => {
     const { userEmail, userPassword, userFirstName, userLastName } = req.body;
     try {
