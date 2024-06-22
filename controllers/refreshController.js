@@ -14,7 +14,6 @@ const Refresh = {
             const decodedRefreshToken = jwt.verify(refreshToken, process.env.JWT_SECRET);
             // const redisUser = await redisClient.hGetAll(decodedRefreshToken.userId);
             const cashedUser = await redisClient.hgetall(decodedRefreshToken.userId);
-            console.log(cashedUser?.user)
             if (cashedUser?.user) {
                 const user = JSON.parse(cashedUser.user);
                 return res.status(200).json({message: "Token refreshed",user , token: cashedUser.token})
@@ -26,13 +25,14 @@ const Refresh = {
             const token = jwt.sign(user, process.env.JWT_SECRET, {
                 expiresIn: "10m",
             });
-            const setCashedUser = await redisClient.hset(decodedRefreshToken.userId, {
+             await redisClient.hset(decodedRefreshToken.userId, {
                 user: JSON.stringify(user),
-                token
+                token,
+
             });
+            await redisClient.expire(decodedRefreshToken.userId, 600);
             return res.status(200).json({message: "Token refreshed", user, token})
         } catch (err) {
-            console.log(err);
             res.clearCookie("rt")
             return res.status(403).json({message: "Unauthorized"});
         }
