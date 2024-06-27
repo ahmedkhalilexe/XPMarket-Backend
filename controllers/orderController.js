@@ -17,7 +17,8 @@ const Order = {
         } catch (error) {
             return res.status(400).json({message: "Something went wrong couldn't get orders."});
         }
-    }, getAllOrdersByUser: async (req, res) => {
+    },
+    getAllOrdersByUser: async (req, res) => {
         const {userId} = req.user;
         try {
             const allOrders = await require("../models/orderModel").getAllOrdersByUser(userId)

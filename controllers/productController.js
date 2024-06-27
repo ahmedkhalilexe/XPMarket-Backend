@@ -63,13 +63,13 @@ const Product = {
             return res.status(400).json({message: "Something went wrong", error: err});
         }
     },
+
     getOnSaleProducts: async (req, res) => {
         const allProducts = await ProductModel.getOnSaleProducts();
         res.status(200).json(allProducts);
     },
 
-    getNewProducts:
-        async (req, res) => {
+    getNewProducts: async (req, res) => {
             const allProducts = await ProductModel.getNewProducts();
             res.status(200).json(allProducts);
         }
