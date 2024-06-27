@@ -1,7 +1,7 @@
 const router = require("express").Router();
 
 router.get(
-  "/getAllusers",
+  "/getAllusers",require("../../middleware/authMiddleware").isAdmin,
   require("../../controllers/userController").getAllUsers
 );
 // router.get(
@@ -9,7 +9,7 @@ router.get(
 //   require("../../controllers/userController").getUser
 // );
 router.delete(
-  "/deleteUser",
+  "/deleteUser",require("../../middleware/authMiddleware").isAdmin,
   require("../../controllers/userController").deleteUser
 );
 
