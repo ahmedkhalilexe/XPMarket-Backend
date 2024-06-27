@@ -18,10 +18,10 @@ const Cart = {
       }
       return res.status(200).json({ message: "item added to cart" });
     }
-    return res.status(403).json({ message: "No item to add to cart" });
+    return res.status(403).json({ message: "No item to add to cart" })
   },
   deleteFromCart: async (req, res) => {
-    const { userCartProductId } = req.body;
+    const userCartProductId = req.query.userCartProductId;
     const deletedCartProduct = await prisma.userCartProducts.delete({
       where: {
         userCartProductId,
@@ -34,6 +34,7 @@ const Cart = {
   },
   updateCartItem: async (req, res) => {
     const { userCartProductId, userCartProductQuantity } = req.body;
+    console.log(userCartProductQuantity)
     const updatedCartProduct = await prisma.userCartProducts.update({
       where: {
         userCartProductId,
@@ -61,7 +62,7 @@ const Cart = {
         productList.push({
           userCartProductId: row.userCartProductId,
           product: product,
-          productQuantity: row.userCartProductQuantity,
+          userCartProductQuantity: row.userCartProductQuantity,
         });
       }
     }
