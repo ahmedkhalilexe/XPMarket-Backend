@@ -45,15 +45,7 @@ const orderModel = {
                         orderedItemQuantity: true, product: {
                             select: {
                                 productId: true,
-                                productName: true,
                                 productPrice: true,
-                                productDescription: true,
-                                productCategoryId: true,
-                                ProductImages: {
-                                    select: {
-                                        productImageUri: true,
-                                    },
-                                },
                             },
                         },
                     }
