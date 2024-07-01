@@ -10,6 +10,7 @@ const orderModel = {
             },
         });
     },
+
     getAllOrders: () => {
         return prisma.orders.findMany({
             include: {
@@ -35,6 +36,7 @@ const orderModel = {
             }
         })
     },
+
     getAllOrdersByUser: (userId) => {
         return prisma.orders.findMany({
             where: {
@@ -54,6 +56,7 @@ const orderModel = {
             }
         })
     },
+
     getOrderById: (orderId) => {
         return prisma.orders.findUnique({
             where: {
@@ -83,6 +86,7 @@ const orderModel = {
 
         })
     },
+
     updateOrder: (orderId,orderStatus,orderedItemId, orderedItemQuantity) => {
         if(!orderedItemId && !orderedItemQuantity){
             return prisma.orders.update({
@@ -114,6 +118,7 @@ const orderModel = {
             }
         })
     },
+
     deleteOrder: async (orderId) => {
         await  prisma.orderedProducts.deleteMany({
             where: {
@@ -128,6 +133,65 @@ const orderModel = {
                 OrderedProducts: true
             }
         })
+    },
+
+    getTotalRevenue:async ()=>{
+        const allOrders = await prisma.orders.findMany({
+            include: {
+                OrderedProducts: {
+                    select: {
+                        orderedItemQuantity: true, product: {
+                            select: {
+                                productPrice: true,
+                            },
+                        },
+                    }
+
+                }
+            }
+        });
+        let totalRevenue = 0;
+        allOrders.forEach(order => {
+            order.OrderedProducts.forEach(orderedProduct => {
+                totalRevenue += orderedProduct.orderedItemQuantity * orderedProduct.product.productPrice;
+            })
+        });
+        return totalRevenue;
+    },
+
+    getTotalOrders: async ()=>{
+        return prisma.orders.count();
+    },
+
+    getRecentOrders: async ()=>{
+        return prisma.orders.findMany({
+            orderBy: {
+                createdAt: "desc"
+            },
+            take: 6,
+            include: {
+                user: {
+                    select: {
+                        userFirstName: true,
+                        userLastName: true,
+                        userEmail: true,
+                    }
+                },
+                OrderedProducts: {
+                    select: {
+                        orderedItemQuantity: true,
+                        product: {
+                            select: {
+                                productId: true,
+                                productPrice: true,
+                            },
+                        },
+                    }
+
+                }
+            },
+        });
+
     }
 }
 module.exports = orderModel;

@@ -41,11 +41,13 @@ const User = {
       return res.status(403).json({ message: "Email or password incorrect" });
     }
   },
+
   signOut: (req, res) => {
     res.clearCookie("t");
     res.clearCookie("rt");
     return res.status(200).json({ message: "Signed out" });
   },
+
   signUp: async (req, res) => {
     const { userEmail, userPassword, userFirstName, userLastName } = req.body;
     try {
@@ -80,10 +82,12 @@ const User = {
       return res.status(400).json({ message: "Error creating user" });
     }
   },
+
   getAllUsers: async (req, res) => {
     const allUsers = await prisma.users.findMany();
     return res.status(200).json(allUsers);
   },
+
   deleteUser: async (req, res) => {
     const { userId } = req.body;
     try {
@@ -100,6 +104,38 @@ const User = {
       return res.status(400).json({ message: "Something went wrong", error });
     }
   },
+
+  getAllUsersCount: async (req, res) => {
+    try{
+    const allUsers = await prisma.users.findMany();
+    return res.status(200).json(allUsers.length);
+    }
+    catch{
+      return res.status(400).json({ message: "Something went wrong" });
+    }
+  },
+
+  getRecentUsers: async (req, res) =>{
+    try{
+    const allUsers = await prisma.users.findMany({
+      take: 10,
+      orderBy:{
+        userCreatedAt: "desc"
+      },
+      select:{
+        userId: true,
+        userEmail: true,
+        userFirstName: true,
+        userLastName: true,
+        // userRoleId: true,
+      }
+    });
+    return res.status(200).json(allUsers);
+    }
+    catch (e) {
+        return res.status(400).json({ message: "Something went wrong" });
+    }
+  }
   // userUpdate: (req, res) => {},
 //   getUser : (req, res) => {
 //   const user  = req.user;

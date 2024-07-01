@@ -72,7 +72,16 @@ const Product = {
     getNewProducts: async (req, res) => {
             const allProducts = await ProductModel.getNewProducts();
             res.status(200).json(allProducts);
+        },
+
+    getTotalProducts: async (req, res) => {
+        try {
+            const totalProducts = await ProductModel.getTotalProducts();
+            return res.status(200).json(totalProducts);
+        } catch (error) {
+            return res.status(400).json({message: "Something went wrong"});
         }
+    },
 };
 
 

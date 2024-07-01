@@ -20,6 +20,7 @@ const ProductModel = {
             }
         });
     },
+
     updateProduct: async (productId,productName,productDescription,productPrice,productCategoryId,ProductImages,currentTime)=>{
         await prisma.products.update({
             where: {
@@ -46,6 +47,7 @@ const ProductModel = {
         }
 
     },
+
     deleteProduct: async (productId)=>{
         await prisma.productImages.deleteMany({
             where: {
@@ -89,6 +91,7 @@ const ProductModel = {
             },
         });
     },
+
     getProductById: async (productId) => {
         return prisma.products.findUnique({
             where: {
@@ -102,6 +105,7 @@ const ProductModel = {
             },
         });
     },
+
     getAllProducts: async () => {
         return prisma.products.findMany({
             include: {
@@ -113,6 +117,7 @@ const ProductModel = {
             },
         });
     },
+
     getProductsByCategory: async (productCategoryId) => {
         return prisma.products.findMany({
             where: {
@@ -126,6 +131,7 @@ const ProductModel = {
             },
         });
     },
+
     getOnSaleProducts: async () => {
         return prisma.products.findMany({
             take: 4,
@@ -142,6 +148,7 @@ const ProductModel = {
             },
         });
     },
+
     getNewProducts: async () => {
         const getSevenDaysAgo = require('../helpers/getSevenDaysAgo');
         const sevenDaysAgo = getSevenDaysAgo();
@@ -161,6 +168,10 @@ const ProductModel = {
         });
 
     },
+
+    getTotalProducts: async ()=>{
+        return prisma.products.count();
+    }
 };
 
 module.exports = ProductModel;
