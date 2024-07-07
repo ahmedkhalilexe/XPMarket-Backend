@@ -39,7 +39,7 @@ model Orders {
   orderStatus     String
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())
-  user            Users             @relation(fields: [userId], references: [userId])
+  user            Users             @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId          String
   OrderedProducts OrderedProducts[]
 }
@@ -67,9 +67,9 @@ model ProductCategories {
 
 model OrderedProducts {
   orderedItemId       String   @id @default(uuid())
-  order               Orders   @relation(fields: [orderID], references: [orderId])
+  order               Orders   @relation(fields: [orderID], references: [orderId], onDelete: Cascade)
   orderID             String
-  product             Products @relation(fields: [productId], references: [productId])
+  product             Products @relation(fields: [productId], references: [productId], onDelete: Cascade)
   productId           String
   orderedItemQuantity Int      @default(1)
 }
@@ -77,15 +77,15 @@ model OrderedProducts {
 model ProductImages {
   productImageId  String   @id @default(uuid())
   productImageUri String
-  product         Products @relation(fields: [productId], references: [productId])
+  product         Products @relation(fields: [productId], references: [productId], onDelete: Cascade)
   productId       String
 }
 
 model UserCartProducts {
   userCartProductId       String   @id @default(uuid())
-  product                 Products @relation(fields: [productId], references: [productId])
+  product                 Products @relation(fields: [productId], references: [productId], onDelete: Cascade)
   productId               String
-  user                    Users    @relation(fields: [userId], references: [userId])
+  user                    Users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId                  String
   userCartProductQuantity Int      @default(1)
 }
