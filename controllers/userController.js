@@ -83,9 +83,90 @@ const User = {
     }
   },
 
+  addUser: async (req, res) => {
+    const { userEmail, userPassword, userFirstName, userLastName, userRoleId } = req.body;
+    try {
+      if (!userEmail || !userPassword || !userFirstName || !userLastName || !userRoleId) {
+        console.log(!userEmail);
+        return res.status(403).json({ message: "Missing required fields" });
+      }
+      if (!emailRegex.test(userEmail)) {
+        return res.status(403).json({ message: "Invalid email address" });
+      }
+      const user = await prisma.users.findUnique({
+        where: { userEmail },
+      });
+
+      if (user) {
+        return res.status(400).json({ message: "User already exists" });
+      }
+      const salt = bcrypt.genSaltSync(10);
+      const hashedPassword = await bcrypt.hash(userPassword, salt);
+      const newUser = await prisma.users.create({
+        data: {
+          userEmail,
+          userPassword: hashedPassword,
+          userFirstName,
+          userLastName,
+          userRoleId,
+        },
+      });
+      newUser.userPassword = undefined;
+      return res.status(201).json(newUser);
+    } catch (error) {
+      return res.status(403).json({ message: "Error creating user" });
+    }
+  },
+
   getAllUsers: async (req, res) => {
-    const allUsers = await prisma.users.findMany();
+    const allUsers = await prisma.users.findMany({
+      orderBy:{
+        userCreatedAt: "desc"
+      },
+      select:{
+        userId: true,
+        userEmail: true,
+        userFirstName: true,
+        userLastName: true,
+        userCreatedAt: true,
+        userUpdatedAt: true,
+        userRole:{
+          select:{
+            userRoleId: true,
+            userRoleName: true
+          }
+        }
+
+      }
+
+      });
     return res.status(200).json(allUsers);
+  },
+
+  getUserById: async (req, res) => {
+    const userId = req.query.userId;
+    console.log(userId)
+    try {
+      const user = await prisma.users.findUnique({
+        where: {
+          userId,
+        },
+        select:{
+          userId: true,
+          userEmail: true,
+          userFirstName: true,
+          userLastName: true,
+          userRole:{
+            select:{
+              userRoleId: true,
+            }
+          }
+        }
+      });
+      return res.status(200).json(user);
+    } catch(error) {
+      return res.status(400).json({ message: "Something went wrong", error });
+    }
   },
 
   deleteUser: async (req, res) => {
@@ -94,10 +175,9 @@ const User = {
       await prisma.users.delete({
         where: {
           userId,
-        },
-      });
+        },});
       if (userId === req.user.userId) {
-        return res.clearCookie("t").status(200).json({ message: "User deleted" });
+        return res.clearCookie("rt").status(200).json({ message: "User deleted" });
       }
       return res.status(200).json({ message: "User deleted" });
     } catch(error) {
@@ -135,12 +215,41 @@ const User = {
     catch (e) {
         return res.status(400).json({ message: "Something went wrong" });
     }
-  }
-  // userUpdate: (req, res) => {},
-//   getUser : (req, res) => {
-//   const user  = req.user;
-//   return res.status(200).json(user);
-// }
+  },
+
+  updateUser: async (req, res) => {
+    const { userId, userEmail, userFirstName, userLastName, userRoleId } = req.body;
+    try {
+      if (!userId || !userEmail || !userFirstName || !userLastName || !userRoleId) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+      if (!emailRegex.test(userEmail)) {
+        return res.status(400).json({ message: "Invalid email address" });
+      }
+      const user = await prisma.users.findUnique({
+        where: { userId },
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User does not exist" });
+      }
+      await prisma.users.update({
+        where: {
+          userId,
+        },
+        data: {
+          userEmail,
+          userFirstName,
+          userLastName,
+          userRoleId,
+          userUpdatedAt: new Date(),
+        },
+      });
+      return res.status(200).json({ message: "User updated" });
+    } catch (error) {
+      return res.status(400).json({ message: "Error updating user" });
+    }
+  },
 };
 
 module.exports = User;
