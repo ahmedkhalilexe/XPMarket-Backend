@@ -114,6 +114,12 @@ const ProductModel = {
                         productImageId: true, productImageUri: true,
                     },
                 },
+                productCategory:{
+                    select:{
+                        productCategoryId:true,
+                        productCategoryName:true,
+                    }
+                }
             },
         });
     },
