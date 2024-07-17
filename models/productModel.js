@@ -108,6 +108,9 @@ const ProductModel = {
 
     getAllProducts: async () => {
         return prisma.products.findMany({
+            orderBy:{
+                productCreatedAt: "desc",
+            },
             include: {
                 ProductImages: {
                     select: {
