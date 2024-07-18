@@ -21,7 +21,7 @@ const ProductModel = {
         });
     },
 
-    updateProduct: async (productId,productName,productDescription,productPrice,productCategoryId,ProductImages,currentTime)=>{
+    updateProduct: async (productId,productName,productDescription,productPrice,productCategoryId,productImagesUri,currentTime)=>{
         await prisma.products.update({
             where: {
                 productId,
@@ -29,7 +29,7 @@ const ProductModel = {
                 productName, productDescription, productPrice, productCategoryId, productUpdatedAt: currentTime,
             },
         });
-        if (ProductImages.length > 0) {
+        if (productImagesUri.length > 0) {
             await prisma.productImages.deleteMany({
                 where: {
                     productId,
@@ -37,9 +37,9 @@ const ProductModel = {
             });
 
             await prisma.productImages.createMany({
-                data: ProductImages.map((productImage) => {
+                data: productImagesUri.map((productImage) => {
                     return {
-                        productImageUri: productImage.productImageUri, productId,
+                        productImageUri: productImage, productId,
                     };
 
                 }),

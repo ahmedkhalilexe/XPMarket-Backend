@@ -19,10 +19,10 @@ const Product = {
     updateProduct: async (req, res) => {
         const currentTime = new Date();
         const {
-            productId, productName, productDescription, productPrice, productCategoryId, ProductImages = [{}]
+            productId, productName, productDescription, productPrice, productCategoryId, productImagesUri = []
         } = req.body;
         try {
-            await require("../models/productModel").updateProduct(productId, productName, productDescription, productPrice, productCategoryId, ProductImages, currentTime);
+            await require("../models/productModel").updateProduct(productId, productName, productDescription, productPrice, productCategoryId, productImagesUri, currentTime);
             return res.status(201).json({message: "Product updated successfully."});
 
         } catch (err) {
