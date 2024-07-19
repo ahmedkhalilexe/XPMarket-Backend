@@ -1,12 +1,40 @@
+const stripe = require("stripe")("sk_test_51Oz4PrFXpJnJjilt4947DUTuAVZ5gUC1eS4kwxWytbINypi0A8ALKu1t3m7vJl6EiTAu6wN72KcxN39fxQCSpOfg00LKCIGZFJ");
 const Order = {
     createOrder: async (req, res) => {
         const {orderedProducts} = req.body;
+        const formattedOrderedProducts = orderedProducts.map((orderedProduct) => {
+            return {
+                productId: orderedProduct.productId,
+                orderedItemQuantity: 1,
+            };
+        });
+        console.log(formattedOrderedProducts)
         try {
             const {userId} = req.user;
-            await require("../models/orderModel").createOrder(userId, orderedProducts);
-            return res.status(201).json({message: "Order created successfully."});
+            await require("../models/orderModel").createOrder(userId, formattedOrderedProducts);
+            const lineItems = orderedProducts.map((orderedProduct) => {
+                return {
+                    price_data: {
+                        currency: "usd",
+                        product_data: {
+                            name: orderedProduct.productName,
+                            images: [orderedProduct.ProductImages[0].productImageUri],
+                        },
+                        unit_amount: orderedProduct.productPrice * 100,
+                    },
+                    quantity: 1,
+                };
+            });
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types: ["card"],
+                line_items: lineItems,
+                mode: "payment",
+                success_url: "http://localhost:3001/success",
+                cancel_url: "http://localhost:3001/cancel",
+            });
+            return res.status(201).json({message: "Order created successfully.", session});
         } catch (error) {
-            return res.status(400).json({message: "Something went wrong couldn't create order."});
+            return res.status(400).json({message: "Something went wrong couldn't create order.", error});
         }
     },
 

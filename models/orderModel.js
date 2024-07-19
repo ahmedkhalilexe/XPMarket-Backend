@@ -4,7 +4,8 @@ const orderModel = {
     createOrder: (userId, orderedProducts) => {
         return prisma.orders.create({
             data: {
-                userId, orderStatus: "OK", OrderedProducts: {
+                userId, orderStatus: "PENDING",
+                OrderedProducts: {
                     create: orderedProducts
                 }
             },

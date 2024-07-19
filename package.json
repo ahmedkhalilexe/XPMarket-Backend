@@ -18,6 +18,7 @@
     "express": "^4.19.2",
     "ioredis": "^5.4.1",
     "jsonwebtoken": "^9.0.2",
+    "stripe": "^16.2.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
