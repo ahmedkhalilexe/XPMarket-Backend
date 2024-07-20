@@ -1,4 +1,4 @@
-const stripe = require("stripe")("sk_test_51Oz4PrFXpJnJjilt4947DUTuAVZ5gUC1eS4kwxWytbINypi0A8ALKu1t3m7vJl6EiTAu6wN72KcxN39fxQCSpOfg00LKCIGZFJ");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Order = {
     createOrder: async (req, res) => {
         const {orderedProducts} = req.body;
