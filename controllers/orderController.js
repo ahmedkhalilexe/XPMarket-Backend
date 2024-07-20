@@ -5,7 +5,7 @@ const Order = {
         const formattedOrderedProducts = orderedProducts.map((orderedProduct) => {
             return {
                 productId: orderedProduct.productId,
-                orderedItemQuantity: 1,
+                orderedItemQuantity: orderedProduct.quantity,
             };
         });
         console.log(formattedOrderedProducts)
@@ -22,14 +22,14 @@ const Order = {
                         },
                         unit_amount: orderedProduct.productPrice * 100,
                     },
-                    quantity: 1,
+                    quantity: orderedProduct.quantity,
                 };
             });
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ["card"],
                 line_items: lineItems,
                 mode: "payment",
-                success_url: "http://localhost:3001/success",
+                success_url: `http://localhost:3001/success`,
                 cancel_url: "http://localhost:3001/cancel",
             });
             return res.status(201).json({message: "Order created successfully.", session});
