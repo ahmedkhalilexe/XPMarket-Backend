@@ -8,10 +8,9 @@ const Order = {
                 orderedItemQuantity: orderedProduct.quantity,
             };
         });
-        console.log(formattedOrderedProducts)
         try {
             const {userId} = req.user;
-            await require("../models/orderModel").createOrder(userId, formattedOrderedProducts);
+            const order = await require("../models/orderModel").createOrder(userId, formattedOrderedProducts).then((order)=>order);
             const lineItems = orderedProducts.map((orderedProduct) => {
                 return {
                     price_data: {
@@ -29,6 +28,14 @@ const Order = {
                 payment_method_types: ["card"],
                 line_items: lineItems,
                 mode: "payment",
+                payment_intent_data:{
+                    metadata: {
+                        orderId: order.orderId,
+                    }
+                },
+                metadata:{
+                    orderId: order.orderId,
+                },
                 success_url: `http://localhost:3001/success`,
                 cancel_url: "http://localhost:3001/cancel",
             });
