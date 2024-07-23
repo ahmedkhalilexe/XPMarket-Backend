@@ -3,7 +3,7 @@ const stripe = require('stripe')('sk_test_...');
 
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 //this is test i didn't forget it!
-const endpointSecret = "whsec_645e6f003cbfefa0bdd28481b7d2687418e0bddb4aff771a587461cdb7964d17";
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 const webhook = async (request, response) => {
     console.log('Webhook called')

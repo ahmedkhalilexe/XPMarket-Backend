@@ -36,8 +36,8 @@ const Order = {
                 metadata:{
                     orderId: order.orderId,
                 },
-                success_url: `http://localhost:3001/success`,
-                cancel_url: "http://localhost:3001/cancel",
+                success_url: `${process.env.FRONTEND_URL}/success`,
+                cancel_url: `${process.env.FRONTEND_URL}/cancel`,
                 expires_at: Math.floor(Date.now() / 1000) + 1800, // 30 minutes from now
             });
             return res.status(201).json({message: "Order created successfully.", session});
