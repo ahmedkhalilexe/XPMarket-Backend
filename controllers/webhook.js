@@ -37,6 +37,24 @@ const webhook = async (request, response) => {
                 response.status(400).send(`Webhook Error: ${err.message}`);
             }
             break;
+        case "payment_intent.expired":
+            const paymentIntentExpired = event.data.object;
+            try{
+                await require("../models/orderModel").updateOrder(paymentIntentExpired.metadata.orderId, "CANCELLED");
+            }
+            catch(err){
+                response.status(400).send(`Webhook Error: ${err.message}`);
+            }
+            break
+        case "checkout.session.expired":
+            const sessionExpired = event.data.object;
+            try{
+                await require("../models/orderModel").updateOrder(sessionExpired.metadata.orderId, "CANCELLED");
+            }
+            catch(err){
+                response.status(400).send(`Webhook Error: ${err.message}`);
+            }
+            break
         default:
             console.log(`Unhandled event type ${event.type}`);
     }

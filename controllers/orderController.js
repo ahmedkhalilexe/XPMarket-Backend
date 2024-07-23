@@ -38,6 +38,7 @@ const Order = {
                 },
                 success_url: `http://localhost:3001/success`,
                 cancel_url: "http://localhost:3001/cancel",
+                expires_at: Math.floor(Date.now() / 1000) + 1800, // 30 minutes from now
             });
             return res.status(201).json({message: "Order created successfully.", session});
         } catch (error) {
