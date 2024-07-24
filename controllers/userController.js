@@ -44,7 +44,9 @@ const User = {
 
   signOut: (req, res) => {
     res.clearCookie("t");
-    res.clearCookie("rt");
+    res.clearCookie("rt", {
+        sameSite: "none",
+    });
     return res.status(200).json({ message: "Signed out" });
   },
 
