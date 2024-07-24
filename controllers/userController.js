@@ -46,6 +46,7 @@ const User = {
     res.clearCookie("t");
     res.clearCookie("rt", {
         sameSite: "none",
+        secure: true,
     });
     return res.status(200).json({ message: "Signed out" });
   },
