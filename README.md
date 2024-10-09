@@ -1,4 +1,4 @@
-# XP Market
+# XP Market Backend
 
 ## Description
 XPMarket is an e-commerce platform designed to facilitate seamless online shopping. The backend is built using Node.js with Express, and it integrates with PostgreSQL via Prisma ORM for efficient database management. It features user authentication, product management, order processing, and payment integration, ensuring a smooth and secure experience for both customers and administrators.
